@@ -32,14 +32,14 @@ GitViz 是一个强大的命令行工具，可以分析你的 Git 仓库并生�
 ### 安装
 
 ```bash
-# 使用 Bun（推荐）
-bun install -g gitviz
-
 # 使用 npm
-npm install -g gitviz
+npm install -g @anxin233/gitviz
+
+# 使用 Bun（推荐）
+bun install -g @anxin233/gitviz
 
 # 使用 yarn
-yarn global add gitviz
+yarn global add @anxin233/gitviz
 ```
 
 ### 使用方法

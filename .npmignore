@@ -1,0 +1,35 @@
+# 源代码
+src/
+
+# 配置文件
+tsconfig.json
+.github/
+.git/
+.gitignore
+
+# 文档（保留主要文档）
+DEMO.md
+EXAMPLES.md
+QUICKSTART.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
+
+# 开发文件
+node_modules/
+.vscode/
+.idea/
+*.log
+*.tgz
+
+# 测试文件
+test/
+tests/
+*.test.ts
+*.spec.ts
+
+# 其他
+.DS_Store
+.env
+*.swp
+*.swo

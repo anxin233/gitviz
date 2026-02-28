@@ -32,14 +32,14 @@ GitViz is a powerful CLI tool that analyzes your Git repositories and generates 
 ### Installation
 
 ```bash
-# Using Bun (recommended)
-bun install -g gitviz
-
 # Using npm
-npm install -g gitviz
+npm install -g @anxin233/gitviz
+
+# Using Bun (recommended)
+bun install -g @anxin233/gitviz
 
 # Using yarn
-yarn global add gitviz
+yarn global add @anxin233/gitviz
 ```
 
 ### Usage
