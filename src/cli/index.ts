@@ -1,19 +1,27 @@
-#!/usr/bin/env node
 import { Command } from 'commander';
 import chalk from 'chalk';
 import ora from 'ora';
-import { writeFileSync } from 'fs';
+import { writeFileSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { GitParser } from '../core/git-parser.js';
 import { Analyzer } from '../core/analyzer.js';
 import { generateHTML } from '../visualizers/html-generator.js';
+
+// 在 CommonJS 环境中获取版本号
+let version = '1.0.2';
+try {
+  const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
+  version = packageJson.version;
+} catch {
+  // 如果读取失败，使用默认版本号
+}
 
 const program = new Command();
 
 program
   .name('gitviz')
   .description('🎨 Beautiful, interactive Git repository visualizations')
-  .version('1.0.0');
+  .version(version);
 
 program
   .command('analyze')

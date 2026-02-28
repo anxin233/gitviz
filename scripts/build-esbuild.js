@@ -13,10 +13,9 @@ build({
   bundle: true,
   platform: 'node',
   target: 'node18',
-  format: 'cjs', // 改为 CommonJS 格式
-  outfile: join(rootDir, 'dist', 'cli.js'),
+  format: 'cjs',
+  outfile: join(rootDir, 'dist', 'cli.cjs'),
   external: [
-    // 不打包这些 node 内置模块
     'fs',
     'path',
     'url',
@@ -31,17 +30,18 @@ build({
   sourcemap: false,
   logLevel: 'info'
 }).then(() => {
-  // 读取生成的文件并添加 shebang
-  const outputPath = join(rootDir, 'dist', 'cli.js');
+  // 读取生成的文件
+  const outputPath = join(rootDir, 'dist', 'cli.cjs');
   let content = readFileSync(outputPath, 'utf-8');
 
-  // 添加 shebang 到文件开头
-  content = '#!/usr/bin/env node\n' + content;
-
-  writeFileSync(outputPath, content, 'utf-8');
+  // 检查是否已有 shebang，如果没有才添加
+  if (!content.startsWith('#!/usr/bin/env node')) {
+    content = '#!/usr/bin/env node\n' + content;
+    writeFileSync(outputPath, content, 'utf-8');
+  }
 
   console.log('✅ Build successful!');
-  console.log('📁 Output: dist/cli.js');
+  console.log('📁 Output: dist/cli.cjs');
 }).catch((error) => {
   console.error('❌ Build failed:', error);
   process.exit(1);

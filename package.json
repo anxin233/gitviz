@@ -4,7 +4,7 @@
   "description": "🎨 Beautiful, interactive Git repository visualizations - Transform your Git history into stunning visual stories",
   "type": "module",
   "bin": {
-    "gitviz": "./dist/cli.js"
+    "gitviz": "./dist/cli.cjs"
   },
   "scripts": {
     "dev": "node --loader ts-node/esm src/cli/index.ts",
