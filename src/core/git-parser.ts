@@ -23,12 +23,18 @@ export class GitParser {
     try {
       const branchSummary = await this.git.branch(['-a']);
       const branches: BranchInfo[] = [];
+      const seenBranches = new Set<string>();
 
       for (const branchName of branchSummary.all) {
-        // 跳过远程分支的重复
+        // 跳过远程分支的 HEAD 指针
         if (branchName.includes('remotes/origin/HEAD')) continue;
 
-        const cleanName = branchName.replace('remotes/origin/', '');
+        // 清理分支名
+        const cleanName = branchName.replace('remotes/origin/', '').replace(/^\*\s*/, '');
+
+        // 跳过已经处理过的分支（避免本地和远程重复）
+        if (seenBranches.has(cleanName)) continue;
+        seenBranches.add(cleanName);
 
         try {
           const log = await this.git.log({ maxCount: 1, [branchName]: null });

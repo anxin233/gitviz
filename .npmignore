@@ -30,6 +30,9 @@ tests/
 test-*.html
 final-test.html
 gitviz-report.html
+v1.1.0-demo.html
+*-demo.html
+*-test.html
 
 # dist 中的多余文件（只保留 cli.cjs）
 dist/cli.js

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitViz - Current Repository</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      color: #666;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .lang-switch {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+    .lang-switch:hover {
+      transform: translateY(-2px);
+    }
+    .branch-selector {
+      padding: 0.5rem 1rem;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: white;
+    }
+    .section {
+      margin-bottom: 4rem;
+    }
+    .section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+    .chart {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .bar { fill: #667eea; transition: fill 0.3s; }
+    .bar:hover { fill: #764ba2; }
+    .axis { font-size: 12px; }
+    .axis path, .axis line { stroke: #ddd; }
+    .tooltip {
+      position: absolute;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    .branch-comparison {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .branch-card {
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .branch-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    .branch-card.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .branch-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .branch-info {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>📊 GitViz</h1>
+        <p class="subtitle" data-i18n="subtitle">Repository: Current Repository</p>
+      </div>
+      <div class="controls">
+        <button class="lang-switch" onclick="toggleLanguage()">
+          <span id="lang-text">中文</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value">20</div>
+        <div class="stat-label" data-i18n="totalCommits">Total Commits</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">1</div>
+        <div class="stat-label" data-i18n="contributors">Contributors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">31</div>
+        <div class="stat-label" data-i18n="filesChanged">Files Changed</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-value">1</div>
+        <div class="stat-label" data-i18n="branches">Branches</div>
+      </div>
+      
+    </div>
+
+    
+
+    <div class="section">
+      <h2 data-i18n="commitTimeline">📈 Commit Timeline</h2>
+      <div class="chart" id="timeline"></div>
+    </div>
+
+    <div class="section">
+      <h2 data-i18n="topContributors">👥 Top Contributors</h2>
+      <div class="chart" id="contributors"></div>
+    </div>
+
+    <div class="section">
+      <h2 data-i18n="fileHeatmap">🔥 File Change Heatmap</h2>
+      <div class="chart" id="heatmap"></div>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const data = {"timeline":[{"date":"2026-02-28","commits":20,"insertions":3367,"deletions":654}],"contributors":[{"name":"wangxin","commits":20,"lines":4021}],"heatmap":[{"file":"package.json","changes":10,"heat":1},{"file":"README.md","changes":5,"heat":0.5},{"file":"src/cli/index.ts","changes":3,"heat":0.3},{"file":"src/core/git-parser.ts","changes":3,"heat":0.3},{"file":"scripts/build-esbuild.js","changes":3,"heat":0.3},{"file":"README.zh-CN.md","changes":3,"heat":0.3},{"file":"src/core/analyzer.ts","changes":2,"heat":0.2},{"file":"src/core/types.ts","changes":2,"heat":0.2},{"file":"src/visualizers/html-generator.ts","changes":2,"heat":0.2},{"file":"test-viz.html","changes":2,"heat":0.2},{"file":"test-viz2.html","changes":2,"heat":0.2},{"file":".npmignore","changes":2,"heat":0.2},{"file":"tsconfig.json","changes":2,"heat":0.2},{"file":".gitignore","changes":2,"heat":0.2},{"file":"src/visualizers/html-generator-old.ts","changes":1,"heat":0.1},{"file":"scripts/build.js","changes":1,"heat":0.1},{"file":"scripts/bundle.js","changes":1,"heat":0.1},{"file":"DEMO.md","changes":1,"heat":0.1},{"file":"QUICKSTART.md","changes":1,"heat":0.1},{"file":".github/FUNDING.yml","changes":1,"heat":0.1},{"file":".github/ISSUE_TEMPLATE/bug_report.md","changes":1,"heat":0.1},{"file":".github/ISSUE_TEMPLATE/feature_request.md","changes":1,"heat":0.1},{"file":".github/PULL_REQUEST_TEMPLATE.md","changes":1,"heat":0.1},{"file":".github/workflows/ci.yml","changes":1,"heat":0.1},{"file":".github/workflows/release.yml","changes":1,"heat":0.1},{"file":"CODE_OF_CONDUCT.md","changes":1,"heat":0.1},{"file":"SECURITY.md","changes":1,"heat":0.1},{"file":"CHANGELOG.md","changes":1,"heat":0.1},{"file":"CONTRIBUTING.md","changes":1,"heat":0.1},{"file":"EXAMPLES.md","changes":1,"heat":0.1},{"file":"LICENSE","changes":1,"heat":0.1}],"branches":[{"name":"master","commits":20,"lastCommit":"2026-02-28"}]};
+    let currentLang = 'en';
+    let selectedBranch = null;
+
+    // 国际化文本
+    const i18n = {
+      en: {
+        subtitle: 'Repository: Current Repository',
+        totalCommits: 'Total Commits',
+        contributors: 'Contributors',
+        filesChanged: 'Files Changed',
+        branches: 'Branches',
+        branchComparison: '🌿 Branch Comparison',
+        commits: 'Commits',
+        lastCommit: 'Last Commit',
+        commitTimeline: '📈 Commit Timeline',
+        topContributors: '👥 Top Contributors',
+        fileHeatmap: '🔥 File Change Heatmap',
+        date: 'Date',
+        changes: 'Changes',
+        insertions: 'Insertions',
+        deletions: 'Deletions',
+        lines: 'Lines'
+      },
+      zh: {
+        subtitle: '仓库: Current Repository',
+        totalCommits: '总提交数',
+        contributors: '贡献者',
+        filesChanged: '文件变更',
+        branches: '分支数',
+        branchComparison: '🌿 分支对比',
+        commits: '提交数',
+        lastCommit: '最后提交',
+        commitTimeline: '📈 提交时间线',
+        topContributors: '👥 顶级贡献者',
+        fileHeatmap: '🔥 文件变更热力图',
+        date: '日期',
+        changes: '变更',
+        insertions: '新增',
+        deletions: '删除',
+        lines: '代码行'
+      }
+    };
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'zh' : 'en';
+      document.getElementById('lang-text').textContent = currentLang === 'en' ? '中文' : 'English';
+
+      // 更新所有带 data-i18n 属性的元素
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[currentLang][key]) {
+          el.textContent = i18n[currentLang][key];
+        }
+      });
+    }
+
+    function selectBranch(branchName, element) {
+      selectedBranch = branchName;
+
+      // 更新选中状态
+      document.querySelectorAll('.branch-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      element.classList.add('active');
+
+      // 这里可以添加根据分支过滤数据的逻辑
+      console.log('Selected branch:', branchName);
+    }
+
+    // Timeline Chart
+    {
+      const margin = {top: 20, right: 30, bottom: 40, left: 50};
+      const width = 1200 - margin.left - margin.right;
+      const height = 300 - margin.top - margin.bottom;
+
+      const svg = d3.select("#timeline")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const x = d3.scaleBand()
+        .domain(data.timeline.map(d => d.date))
+        .range([0, width])
+        .padding(0.1);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(data.timeline, d => d.commits)])
+        .range([height, 0]);
+
+      svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).tickValues(x.domain().filter((d, i) => i % Math.ceil(data.timeline.length / 10) === 0)));
+
+      svg.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y));
+
+      svg.selectAll(".bar")
+        .data(data.timeline)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.date))
+        .attr("y", d => y(d.commits))
+        .attr("width", x.bandwidth())
+        .attr("height", d => height - y(d.commits))
+        .on("mouseover", function(event, d) {
+          const tooltip = d3.select("#tooltip");
+          const lang = currentLang;
+          tooltip
+            .style("opacity", 1)
+            .html(`<strong>${d.date}</strong><br/>${i18n[lang].commits}: ${d.commits}<br/>+${d.insertions} -${d.deletions}`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select("#tooltip").style("opacity", 0);
+        });
+    }
+
+    // Contributors Chart
+    {
+      const margin = {top: 20, right: 30, bottom: 100, left: 50};
+      const width = 1200 - margin.left - margin.right;
+      const height = 400 - margin.top - margin.bottom;
+
+      const svg = d3.select("#contributors")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const x = d3.scaleBand()
+        .domain(data.contributors.map(d => d.name))
+        .range([0, width])
+        .padding(0.2);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(data.contributors, d => d.commits)])
+        .range([height, 0]);
+
+      svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "rotate(-45)")
+        .style("text-anchor", "end");
+
+      svg.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y));
+
+      svg.selectAll(".bar")
+        .data(data.contributors)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", d => x(d.name))
+        .attr("y", d => y(d.commits))
+        .attr("width", x.bandwidth())
+        .attr("height", d => height - y(d.commits))
+        .on("mouseover", function(event, d) {
+          const tooltip = d3.select("#tooltip");
+          const lang = currentLang;
+          tooltip
+            .style("opacity", 1)
+            .html(`<strong>${d.name}</strong><br/>${i18n[lang].commits}: ${d.commits}<br/>${i18n[lang].lines}: ${d.lines}`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select("#tooltip").style("opacity", 0);
+        });
+    }
+
+    // Heatmap
+    {
+      const margin = {top: 20, right: 30, bottom: 20, left: 300};
+      const width = 1200 - margin.left - margin.right;
+      const height = Math.min(800, data.heatmap.length * 20);
+
+      const svg = d3.select("#heatmap")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const y = d3.scaleBand()
+        .domain(data.heatmap.map(d => d.file))
+        .range([0, height])
+        .padding(0.1);
+
+      const colorScale = d3.scaleSequential(d3.interpolateReds)
+        .domain([0, 1]);
+
+      svg.selectAll("rect")
+        .data(data.heatmap)
+        .enter()
+        .append("rect")
+        .attr("y", d => y(d.file))
+        .attr("width", width)
+        .attr("height", y.bandwidth())
+        .attr("fill", d => colorScale(d.heat))
+        .on("mouseover", function(event, d) {
+          const tooltip = d3.select("#tooltip");
+          const lang = currentLang;
+          tooltip
+            .style("opacity", 1)
+            .html(`<strong>${d.file}</strong><br/>${i18n[lang].changes}: ${d.changes}`)
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px");
+        })
+        .on("mouseout", function() {
+          d3.select("#tooltip").style("opacity", 0);
+        });
+
+      svg.selectAll("text")
+        .data(data.heatmap)
+        .enter()
+        .append("text")
+        .attr("x", -10)
+        .attr("y", d => y(d.file) + y.bandwidth() / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "end")
+        .attr("font-size", "12px")
+        .text(d => d.file);
+    }
+  </script>
+</body>
+</html>
