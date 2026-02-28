@@ -1,6 +1,6 @@
 {
   "name": "@anxin233/gitviz",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "🎨 Beautiful, interactive Git repository visualizations - Transform your Git history into stunning visual stories",
   "type": "module",
   "bin": {
