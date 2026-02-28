@@ -27,6 +27,15 @@ test/
 tests/
 *.test.ts
 *.spec.ts
+test-*.html
+final-test.html
+gitviz-report.html
+
+# dist 中的多余文件（只保留 cli.cjs）
+dist/cli.js
+dist/cli/
+dist/core/
+dist/visualizers/
 
 # 其他
 .DS_Store
