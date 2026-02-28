@@ -7,6 +7,7 @@ export interface GitCommit {
   files: string[];
   insertions: number;
   deletions: number;
+  branch?: string; // 添加分支信息
 }
 
 export interface ContributorStats {
@@ -26,10 +27,17 @@ export interface FileChange {
   contributors: Set<string>;
 }
 
+export interface BranchInfo {
+  name: string;
+  commits: number;
+  lastCommit: Date;
+}
+
 export interface RepositoryAnalysis {
   commits: GitCommit[];
   contributors: Map<string, ContributorStats>;
   files: Map<string, FileChange>;
+  branches?: BranchInfo[]; // 添加分支信息
   totalCommits: number;
   totalContributors: number;
   dateRange: {
@@ -42,6 +50,7 @@ export interface VisualizationData {
   timeline: TimelineData[];
   contributors: ContributorData[];
   heatmap: HeatmapData[];
+  branches?: BranchData[]; // 添加分支数据
 }
 
 export interface TimelineData {
@@ -49,6 +58,7 @@ export interface TimelineData {
   commits: number;
   insertions: number;
   deletions: number;
+  branch?: string;
 }
 
 export interface ContributorData {
@@ -61,4 +71,10 @@ export interface HeatmapData {
   file: string;
   changes: number;
   heat: number;
+}
+
+export interface BranchData {
+  name: string;
+  commits: number;
+  lastCommit: string;
 }

@@ -6,7 +6,9 @@ import type {
   VisualizationData,
   TimelineData,
   ContributorData,
-  HeatmapData
+  HeatmapData,
+  BranchInfo,
+  BranchData
 } from './types.js';
 
 export class Analyzer {
@@ -71,7 +73,8 @@ export class Analyzer {
     return {
       timeline: this.generateTimelineData(analysis.commits),
       contributors: this.generateContributorData(analysis.contributors),
-      heatmap: this.generateHeatmapData(analysis.files)
+      heatmap: this.generateHeatmapData(analysis.files),
+      branches: this.generateBranchData(analysis.branches || [])
     };
   }
 
@@ -122,5 +125,15 @@ export class Analyzer {
       }))
       .sort((a, b) => b.changes - a.changes)
       .slice(0, 50);
+  }
+
+  private generateBranchData(branches: BranchInfo[]): BranchData[] {
+    return branches
+      .map(b => ({
+        name: b.name,
+        commits: b.commits,
+        lastCommit: b.lastCommit.toISOString().split('T')[0]
+      }))
+      .sort((a, b) => b.commits - a.commits);
   }
 }

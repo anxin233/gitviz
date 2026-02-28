@@ -51,9 +51,13 @@ program
         process.exit(1);
       }
 
+      spinner.text = 'Getting branch information...';
+      const branches = await parser.getBranches();
+
       spinner.text = `Analyzing ${commits.length} commits...`;
       const analyzer = new Analyzer();
       const analysis = analyzer.analyze(commits);
+      analysis.branches = branches;
 
       spinner.text = 'Generating visualization data...';
       const vizData = analyzer.generateVisualizationData(analysis);

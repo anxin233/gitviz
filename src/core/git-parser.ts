@@ -1,5 +1,5 @@
 import simpleGit, { SimpleGit, LogResult } from 'simple-git';
-import type { GitCommit } from './types.js';
+import type { GitCommit, BranchInfo } from './types.js';
 
 export class GitParser {
   private git: SimpleGit;
@@ -19,12 +19,50 @@ export class GitParser {
     }
   }
 
-  async parseCommits(limit: number = 1000): Promise<GitCommit[]> {
-    const log: LogResult = await this.git.log({
+  async getBranches(): Promise<BranchInfo[]> {
+    try {
+      const branchSummary = await this.git.branch(['-a']);
+      const branches: BranchInfo[] = [];
+
+      for (const branchName of branchSummary.all) {
+        // 跳过远程分支的重复
+        if (branchName.includes('remotes/origin/HEAD')) continue;
+
+        const cleanName = branchName.replace('remotes/origin/', '');
+
+        try {
+          const log = await this.git.log({ maxCount: 1, [branchName]: null });
+          if (log.latest) {
+            const commitCount = await this.git.raw(['rev-list', '--count', branchName]);
+            branches.push({
+              name: cleanName,
+              commits: parseInt(commitCount.trim()),
+              lastCommit: new Date(log.latest.date)
+            });
+          }
+        } catch {
+          // 跳过无法访问的分支
+        }
+      }
+
+      return branches;
+    } catch {
+      return [];
+    }
+  }
+
+  async parseCommits(limit: number = 1000, branch?: string): Promise<GitCommit[]> {
+    const logOptions: any = {
       maxCount: limit,
       '--numstat': null,
       '--pretty': 'format:%H|%an|%ae|%ai|%s'
-    });
+    };
+
+    if (branch) {
+      logOptions[branch] = null;
+    }
+
+    const log: LogResult = await this.git.log(logOptions);
 
     const commits: GitCommit[] = [];
 
@@ -57,7 +95,8 @@ export class GitParser {
         message: commit.message,
         files: diffSummary.files.map(f => f.file),
         insertions: diffSummary.insertions,
-        deletions: diffSummary.deletions
+        deletions: diffSummary.deletions,
+        branch: branch
       });
     }
 

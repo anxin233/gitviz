@@ -24,12 +24,6 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
       padding: 3rem;
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
     h1 {
       font-size: 3rem;
       margin-bottom: 0.5rem;
@@ -41,33 +35,7 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
     .subtitle {
       color: #666;
       font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-    .controls {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-    .lang-switch {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      padding: 0.5rem 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: transform 0.2s;
-    }
-    .lang-switch:hover {
-      transform: translateY(-2px);
-    }
-    .branch-selector {
-      padding: 0.5rem 1rem;
-      border: 2px solid #667eea;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      background: white;
+      margin-bottom: 3rem;
     }
     .section {
       margin-bottom: 4rem;
@@ -96,7 +64,6 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s;
-      z-index: 1000;
     }
     .stats {
       display: grid;
@@ -120,106 +87,40 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
       font-size: 1rem;
       opacity: 0.9;
     }
-    .branch-comparison {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .branch-card {
-      background: white;
-      border: 2px solid #667eea;
-      border-radius: 12px;
-      padding: 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .branch-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-    }
-    .branch-card.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    .branch-name {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-    .branch-info {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div>
-        <h1>📊 GitViz</h1>
-        <p class="subtitle" data-i18n="subtitle">Repository: ${repoName}</p>
-      </div>
-      <div class="controls">
-        <button class="lang-switch" onclick="toggleLanguage()">
-          <span id="lang-text">中文</span>
-        </button>
-      </div>
-    </div>
+    <h1>📊 GitViz</h1>
+    <p class="subtitle">Repository: ${repoName}</p>
 
     <div class="stats">
       <div class="stat-card">
         <div class="stat-value">${data.timeline.reduce((sum, d) => sum + d.commits, 0)}</div>
-        <div class="stat-label" data-i18n="totalCommits">Total Commits</div>
+        <div class="stat-label">Total Commits</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">${data.contributors.length}</div>
-        <div class="stat-label" data-i18n="contributors">Contributors</div>
+        <div class="stat-label">Contributors</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">${data.heatmap.length}</div>
-        <div class="stat-label" data-i18n="filesChanged">Files Changed</div>
-      </div>
-      ${data.branches && data.branches.length > 0 ? `
-      <div class="stat-card">
-        <div class="stat-value">${data.branches.length}</div>
-        <div class="stat-label" data-i18n="branches">Branches</div>
-      </div>
-      ` : ''}
-    </div>
-
-    ${data.branches && data.branches.length > 1 ? `
-    <div class="section">
-      <h2 data-i18n="branchComparison">🌿 Branch Comparison</h2>
-      <div class="branch-comparison" id="branchComparison">
-        ${data.branches.map((branch, idx) => `
-          <div class="branch-card ${idx === 0 ? 'active' : ''}" onclick="selectBranch('${branch.name}', this)">
-            <div class="branch-name">${branch.name}</div>
-            <div class="branch-info">
-              <div><span data-i18n="commits">Commits</span>: ${branch.commits}</div>
-              <div><span data-i18n="lastCommit">Last Commit</span>: ${branch.lastCommit}</div>
-            </div>
-          </div>
-        `).join('')}
+        <div class="stat-label">Files Changed</div>
       </div>
     </div>
-    ` : ''}
 
     <div class="section">
-      <h2 data-i18n="commitTimeline">📈 Commit Timeline</h2>
+      <h2>📈 Commit Timeline</h2>
       <div class="chart" id="timeline"></div>
     </div>
 
     <div class="section">
-      <h2 data-i18n="topContributors">👥 Top Contributors</h2>
+      <h2>👥 Top Contributors</h2>
       <div class="chart" id="contributors"></div>
     </div>
 
     <div class="section">
-      <h2 data-i18n="fileHeatmap">🔥 File Change Heatmap</h2>
+      <h2>🔥 File Change Heatmap</h2>
       <div class="chart" id="heatmap"></div>
     </div>
   </div>
@@ -228,74 +129,6 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
 
   <script>
     const data = ${JSON.stringify(data)};
-    let currentLang = 'en';
-    let selectedBranch = null;
-
-    // 国际化文本
-    const i18n = {
-      en: {
-        subtitle: 'Repository: ${repoName}',
-        totalCommits: 'Total Commits',
-        contributors: 'Contributors',
-        filesChanged: 'Files Changed',
-        branches: 'Branches',
-        branchComparison: '🌿 Branch Comparison',
-        commits: 'Commits',
-        lastCommit: 'Last Commit',
-        commitTimeline: '📈 Commit Timeline',
-        topContributors: '👥 Top Contributors',
-        fileHeatmap: '🔥 File Change Heatmap',
-        date: 'Date',
-        changes: 'Changes',
-        insertions: 'Insertions',
-        deletions: 'Deletions',
-        lines: 'Lines'
-      },
-      zh: {
-        subtitle: '仓库: ${repoName}',
-        totalCommits: '总提交数',
-        contributors: '贡献者',
-        filesChanged: '文件变更',
-        branches: '分支数',
-        branchComparison: '🌿 分支对比',
-        commits: '提交数',
-        lastCommit: '最后提交',
-        commitTimeline: '📈 提交时间线',
-        topContributors: '👥 顶级贡献者',
-        fileHeatmap: '🔥 文件变更热力图',
-        date: '日期',
-        changes: '变更',
-        insertions: '新增',
-        deletions: '删除',
-        lines: '代码行'
-      }
-    };
-
-    function toggleLanguage() {
-      currentLang = currentLang === 'en' ? 'zh' : 'en';
-      document.getElementById('lang-text').textContent = currentLang === 'en' ? '中文' : 'English';
-
-      // 更新所有带 data-i18n 属性的元素
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[currentLang][key]) {
-          el.textContent = i18n[currentLang][key];
-        }
-      });
-    }
-
-    function selectBranch(branchName, element) {
-      selectedBranch = branchName;
-
-      // 更新选中状态
-      document.querySelectorAll('.branch-card').forEach(card => {
-        card.classList.remove('active');
-      });
-      element.classList.add('active');
-
-      // 这里可以添加根据分支过滤数据的逻辑
-      console.log('Selected branch:', branchName);
-    }
 
     // Timeline Chart
     {
@@ -338,11 +171,9 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
         .attr("width", x.bandwidth())
         .attr("height", d => height - y(d.commits))
         .on("mouseover", function(event, d) {
-          const tooltip = d3.select("#tooltip");
-          const lang = currentLang;
-          tooltip
+          d3.select("#tooltip")
             .style("opacity", 1)
-            .html(\`<strong>\${d.date}</strong><br/>\${i18n[lang].commits}: \${d.commits}<br/>+\${d.insertions} -\${d.deletions}\`)
+            .html(\`<strong>\${d.date}</strong><br/>Commits: \${d.commits}<br/>+\${d.insertions} -\${d.deletions}\`)
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 10) + "px");
         })
@@ -395,11 +226,9 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
         .attr("width", x.bandwidth())
         .attr("height", d => height - y(d.commits))
         .on("mouseover", function(event, d) {
-          const tooltip = d3.select("#tooltip");
-          const lang = currentLang;
-          tooltip
+          d3.select("#tooltip")
             .style("opacity", 1)
-            .html(\`<strong>\${d.name}</strong><br/>\${i18n[lang].commits}: \${d.commits}<br/>\${i18n[lang].lines}: \${d.lines}\`)
+            .html(\`<strong>\${d.name}</strong><br/>Commits: \${d.commits}<br/>Lines: \${d.lines}\`)
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 10) + "px");
         })
@@ -438,11 +267,9 @@ export function generateHTML(data: VisualizationData, repoName: string): string 
         .attr("height", y.bandwidth())
         .attr("fill", d => colorScale(d.heat))
         .on("mouseover", function(event, d) {
-          const tooltip = d3.select("#tooltip");
-          const lang = currentLang;
-          tooltip
+          d3.select("#tooltip")
             .style("opacity", 1)
-            .html(\`<strong>\${d.file}</strong><br/>\${i18n[lang].changes}: \${d.changes}\`)
+            .html(\`<strong>\${d.file}</strong><br/>Changes: \${d.changes}\`)
             .style("left", (event.pageX + 10) + "px")
             .style("top", (event.pageY - 10) + "px");
         })
