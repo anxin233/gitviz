@@ -29,7 +29,25 @@ export class GitParser {
     const commits: GitCommit[] = [];
 
     for (const commit of log.all) {
-      const diffSummary = await this.git.diffSummary([`${commit.hash}^`, commit.hash]);
+      let diffSummary;
+
+      try {
+        // 尝试获取 diff，对于第一个提交使用特殊处理
+        diffSummary = await this.git.diffSummary([`${commit.hash}^`, commit.hash]);
+      } catch {
+        // 如果是第一个提交（root commit），使用空树对比
+        try {
+          diffSummary = await this.git.diffSummary(['4b825dc642cb6eb9a060e54bf8d69288fbee4904', commit.hash]);
+        } catch {
+          // 如果还是失败，使用默认值
+          diffSummary = {
+            files: [],
+            insertions: 0,
+            deletions: 0,
+            changed: 0
+          };
+        }
+      }
 
       commits.push({
         hash: commit.hash,
