@@ -5,8 +5,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
 [![Bun](https://img.shields.io/badge/Bun-1.0-black.svg)](https://bun.sh/)
+[![GitHub stars](https://img.shields.io/github/stars/anxin233/gitviz?style=social)](https://github.com/anxin233/gitviz)
+[![GitHub issues](https://img.shields.io/github/issues/anxin233/gitviz)](https://github.com/anxin233/gitviz/issues)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 GitViz is a powerful CLI tool that analyzes your Git repositories and generates beautiful, interactive visualizations. Understand your project's history, contributor patterns, and code evolution at a glance.
+
+![Demo](https://via.placeholder.com/800x400/667eea/ffffff?text=GitViz+Demo+Coming+Soon)
+
+[📖 Quick Start](QUICKSTART.md) • [🎨 Demo](DEMO.md) • [📚 Examples](EXAMPLES.md) • [🤝 Contributing](CONTRIBUTING.md)
 
 ## ✨ Features
 
@@ -121,7 +128,7 @@ Contributions are welcome! Here's how you can help:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/gitviz.git
+git clone https://github.com/anxin233/gitviz.git
 cd gitviz
 
 # Install dependencies
@@ -166,8 +173,8 @@ If you find GitViz useful, please consider:
 
 ## 📬 Contact
 
-- Issues: [GitHub Issues](https://github.com/yourusername/gitviz/issues)
-- Discussions: [GitHub Discussions](https://github.com/yourusername/gitviz/discussions)
+- Issues: [GitHub Issues](https://github.com/anxin233/gitviz/issues)
+- Discussions: [GitHub Discussions](https://github.com/anxin233/gitviz/discussions)
 
 ---
 
