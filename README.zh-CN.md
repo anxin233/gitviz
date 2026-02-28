@@ -2,14 +2,15 @@
 
 > 将你的 Git 历史转换为令人惊艳的可视化故事
 
+[English](README.md) | 简体中文
+
+[![npm version](https://img.shields.io/npm/v/@anxin233/gitviz.svg)](https://www.npmjs.com/package/@anxin233/gitviz)
+[![npm downloads](https://img.shields.io/npm/dm/@anxin233/gitviz.svg)](https://www.npmjs.com/package/@anxin233/gitviz)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![Bun](https://img.shields.io/badge/Bun-1.0-black.svg)](https://bun.sh/)
 [![GitHub stars](https://img.shields.io/github/stars/anxin233/gitviz?style=social)](https://github.com/anxin233/gitviz)
 [![GitHub issues](https://img.shields.io/github/issues/anxin233/gitviz)](https://github.com/anxin233/gitviz/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-
-[English](README.md) | 简体中文
 
 GitViz 是一个强大的命令行工具，可以分析你的 Git 仓库并生成精美的交互式可视化图表。一目了然地理解项目历史、贡献者模式和代码演化过程。
 

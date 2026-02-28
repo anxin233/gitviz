@@ -4,9 +4,10 @@
 
 English | [简体中文](README.zh-CN.md)
 
+[![npm version](https://img.shields.io/npm/v/@anxin233/gitviz.svg)](https://www.npmjs.com/package/@anxin233/gitviz)
+[![npm downloads](https://img.shields.io/npm/dm/@anxin233/gitviz.svg)](https://www.npmjs.com/package/@anxin233/gitviz)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![Bun](https://img.shields.io/badge/Bun-1.0-black.svg)](https://bun.sh/)
 [![GitHub stars](https://img.shields.io/github/stars/anxin233/gitviz?style=social)](https://github.com/anxin233/gitviz)
 [![GitHub issues](https://img.shields.io/github/issues/anxin233/gitviz)](https://github.com/anxin233/gitviz/issues)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
