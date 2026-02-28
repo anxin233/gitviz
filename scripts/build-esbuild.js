@@ -13,11 +13,8 @@ build({
   bundle: true,
   platform: 'node',
   target: 'node18',
-  format: 'esm',
+  format: 'cjs', // 改为 CommonJS 格式
   outfile: join(rootDir, 'dist', 'cli.js'),
-  banner: {
-    js: '#!/usr/bin/env node'
-  },
   external: [
     // 不打包这些 node 内置模块
     'fs',
@@ -30,10 +27,19 @@ build({
     'os',
     'crypto'
   ],
-  minify: false, // 保持可读性，方便调试
+  minify: false,
   sourcemap: false,
   logLevel: 'info'
 }).then(() => {
+  // 读取生成的文件并添加 shebang
+  const outputPath = join(rootDir, 'dist', 'cli.js');
+  let content = readFileSync(outputPath, 'utf-8');
+
+  // 添加 shebang 到文件开头
+  content = '#!/usr/bin/env node\n' + content;
+
+  writeFileSync(outputPath, content, 'utf-8');
+
   console.log('✅ Build successful!');
   console.log('📁 Output: dist/cli.js');
 }).catch((error) => {
