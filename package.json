@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "bun run src/cli/index.ts",
-    "build": "bun build src/cli/index.ts --outdir dist --target node --minify",
+    "build": "bun build src/cli/index.ts --outfile dist/cli.js --target node --minify",
     "build:web": "cd src/web && vite build",
     "preview": "cd src/web && vite preview",
     "type-check": "tsc --noEmit"
